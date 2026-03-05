@@ -618,6 +618,108 @@
     .vc-notice strong {
       color: var(--court-blue);
     }
+
+    /* Recording Notes Panel */
+    .notes-toggle-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: 'Segoe UI', 'Arial Hebrew', 'Tahoma', sans-serif;
+      transition: all 0.3s ease;
+      display: none;
+    }
+
+    .notes-toggle-btn.active {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .notes-toggle-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .notes-toggle-btn.open {
+      background: var(--court-gold);
+      border-color: var(--court-gold);
+      color: var(--court-blue);
+    }
+
+    .notes-panel {
+      display: none;
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border-bottom: 2px solid var(--court-gold);
+      padding: 12px 16px;
+      animation: slideDown 0.3s ease;
+    }
+
+    .notes-panel.active {
+      display: block;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; max-height: 0; }
+      to { opacity: 1; max-height: 500px; }
+    }
+
+    .notes-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .notes-panel-title {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--court-blue);
+    }
+
+    .notes-panel-close {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      padding: 2px 6px;
+    }
+
+    .notes-card {
+      background: white;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      border-right: 3px solid var(--court-gold);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .notes-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .notes-card-title {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--court-blue);
+      margin-bottom: 4px;
+    }
+
+    .notes-card-content {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .notes-card-tip {
+      font-size: 0.75rem;
+      color: var(--amber-600);
+      margin-top: 6px;
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
@@ -634,6 +736,25 @@
       <div class="timer-label">טיימר תזכורת לעצירת הקלטה</div>
       <div class="timer-display" id="timerDisplay">00:00</div>
     </div>
+    <button class="notes-toggle-btn" id="notesToggleBtn" onclick="toggleNotesPanel()">📝 הערות להקלטה</button>
+  </div>
+
+  <!-- Recording Notes Panel -->
+  <div class="notes-panel" id="notesPanel">
+    <div class="notes-panel-header">
+      <div class="notes-panel-title">📝 הערות להקלטה</div>
+      <button class="notes-panel-close" onclick="toggleNotesPanel()">✕</button>
+    </div>
+    <div class="notes-card">
+      <div class="notes-card-title">הערות להקלטה</div>
+      <div class="notes-card-content">יש להקפיד לרשום בהערות מי הדוברים, מי העדים שנחקרים, שלב חקירה, מי עורך הדין שחוקר, וכל אירוע אחר כמו הצגת ראיות, סימונם וכו'.</div>
+      <div class="notes-card-tip">* בדן יחיד אין צורך לרשום בהערות כאשר השופט מדבר.<br>* בהרכב יש לרשום את שם השופט הדובר.</div>
+    </div>
+    <div class="notes-card">
+      <div class="notes-card-title">תשומת לב מיוחדת במהלך הדיון</div>
+      <div class="notes-card-content">1. מיקרופונים גלויים ולא מוסתרים ע"י קלסרים וכו'.<br>2. הדובר טוען רק ממקום מושבו בסמוך למיקרופון.<br>3. בארים מרצדים כראוי.</div>
+      <div class="notes-card-tip">* במידה ומסך הבארים קופא, יש לעדכן שופט + עצירת הקלטה + פנייה דחופה לנאמן מחשוב.</div>
+    </div>
   </div>
 
   <!-- Progress Bar -->
@@ -642,7 +763,7 @@
       <div class="progress-fill" id="progressFill" style="width: 0"></div>
     </div>
     <div class="progress-text">
-      <span id="progressText">0 מתוך 19 שלבים הושלמו</span>
+      <span id="progressText">0 מתוך 17 שלבים הושלמו</span>
       <span id="progressPercent">0%</span>
     </div>
   </div>
@@ -793,18 +914,6 @@
             description: "יש להעלות את מסך הבארים ← לחץ על כפתור החיווי הכחול ובחר ב-soundbars ← עבור ללשונית נט המשפט ← התחל הקלטה ← לאחר 30 דקות עצור הקלטה למשך 10 שניות והפעל שוב.",
             rationale: "* ניתן לבצע רישום ידני של שעות התחלת ההקלטה.<br>* בקרות להקלטה תקינה = בארים מרצדים וכפתור חיווי אדום.<br>* בעת אישור שלב זה יופעל שעון עצר שיתזכר אותך כל 30 דקות."
           },
-          {
-            id: 12,
-            title: "הערות להקלטה",
-            description: "יש להקפיד לרשום בהערות מי הדוברים, מי העדים שנחקרים, שלב חקירה, מי עורך הדין שחוקר, וכל אירוע אחר כמו הצגת ראיות, סימונם וכו'.",
-            rationale: "* בדן יחיד אין צורך לרשום בהערות כאשר השופט מדבר.<br>* בהרכב יש לרשום את שם השופט הדובר."
-          },
-          {
-            id: 13,
-            title: "תשומת לב מיוחדת במהלך הדיון",
-            description: "1. מיקרופונים גלויים ולא מוסתרים ע\"י קלסרים וכו'.<br>2. הדובר טוען רק ממקום מושבו בסמוך למיקרופון.<br>3. בארים מרצדים כראוי.",
-            rationale: "* במידה ומסך הבארים קופא, יש לעדכן שופט + עצירת הקלטה + פנייה דחופה לנאמן מחשוב."
-          }
         ]
       },
       {
@@ -813,37 +922,37 @@
         icon: "✅",
         steps: [
           {
-            id: 14,
+            id: 12,
             title: "הקלדת החלטות",
             description: "החלטות אופרטיביות יוקלדו בפרוטוקול הדיון במהלך ההקלטה.<br>ניתן עפ\"י החלטת שופט לעצור הקלטה בזמן הקלדת ההחלטה.<br>בסיום הדיון: יש ללחוץ עצור הקלטה, הדפסת הפרוטוקול לצדדים ולשופט, לאחר מכן עצור דיון ולחץ על כן לסיום הדיון והמסך ייסגר. (לעיתים רצוי להמתין מספר שניות)",
             rationale: "<strong>שים לב! באישור שלב זה, ייעצר הטיימר.</strong>"
           },
           {
-            id: 15,
+            id: 13,
             title: "כניסה ל-VDI לשמיעת הקבצים",
             description: "נט המשפט ← תיק אלקטרוני ← לשונית פרוטוקולים ← לחיצה על פליי כחול ← הקשבה לכל קובץ מס' שניות (שימו לב שמס' הקבצים הוא כמספר רישום ההפסקות שביצעת).",
             rationale: "* גם אם השופט הורה שלא להזמין תמלול, חובה לשמוע את קבצי השמע."
           },
           {
-            id: 16,
+            id: 14,
             title: "בקשת חתימה מהשופט",
             description: "רק לאחר שהקבצים נבדקו ונמצאו תקינים, יש לבקש מהשופט לחתום על הפרוטוקול.",
             rationale: "אין להזמין תמלול אם אחד הקבצים אינו תקין!"
           },
           {
-            id: 17,
+            id: 15,
             title: "הזמנת תמלול (רק בהנחיית השופט)",
             description: "עמידה על תיקיית 'פרוטוקולים' ← קליק ימני על תאריך הפרוטוקול ← הזמנת תמלול ← לבחור רמת דחיפות ← יוזמן תמלול SUMIT. רק במידה ונדרש תמלול חיצוני - יש להיכנס שוב ולסמן 'האם נדרש גם תמלול מחברה חיצונית?' במחוז תל אביב: אין להזמין תמלול מחברה חיצונית!",
             rationale: "תמלול סאמיט (AI) היא ברירת המחדל! אין להזמין תמלול חיצוני אלא בהנחיית השופט."
           },
           {
-            id: 18,
+            id: 16,
             title: "קביעת דיון המשך",
             description: "יש לקבוע ביומן את דיון ההמשך",
             rationale: null
           },
           {
-            id: 19,
+            id: 17,
             title: "הפקת בר-קוד למוצגים",
             description: "יש להפיק בר-קוד למוצגים, במידה והוגשו במהלך הדיון ולהעביר את המוצג לסריקה במזכירות.",
             rationale: null
@@ -896,6 +1005,7 @@
     state.recordingCount = 0;
     startTimerInterval();
     document.getElementById('timerContainer').classList.add('active');
+    document.getElementById('notesToggleBtn').classList.add('active');
   }
 
   function startTimerInterval() {
@@ -945,7 +1055,17 @@
     state.lastNotificationTime = null;
     document.getElementById('timerContainer').classList.remove('active', 'timer-warning');
     document.getElementById('timerDisplay').textContent = '00:00';
+    document.getElementById('notesToggleBtn').classList.remove('active', 'open');
+    document.getElementById('notesPanel').classList.remove('active');
     saveState();
+  }
+
+  // Notes Panel Toggle
+  function toggleNotesPanel() {
+    const panel = document.getElementById('notesPanel');
+    const btn = document.getElementById('notesToggleBtn');
+    panel.classList.toggle('active');
+    btn.classList.toggle('open');
   }
 
   function showTimerNotification() {
@@ -1053,8 +1173,8 @@
       startTimer();
     }
 
-    // Stop timer and save duration when step 14 is completed
-    if (stepId === 14) {
+    // Stop timer and save duration when step 12 is completed
+    if (stepId === 12) {
       stopTimerAndSaveDuration();
     }
 
@@ -1097,8 +1217,8 @@
         startTimer();
       }
 
-      // Stop timer and save duration when step 14 is bypassed
-      if (pendingBypassStep === 14) {
+      // Stop timer and save duration when step 12 is bypassed
+      if (pendingBypassStep === 12) {
         stopTimerAndSaveDuration();
       }
 
@@ -1120,7 +1240,7 @@
 
   // Update progress bar
   function updateProgress() {
-    const totalSteps = 19;
+    const totalSteps = 17;
     const completedCount = Object.keys(state.completedSteps).length + Object.keys(state.bypassedSteps).length;
     const percent = Math.round((completedCount / totalSteps) * 100);
 
@@ -1165,7 +1285,7 @@
 
   // Check completion
   function checkCompletion() {
-    const totalSteps = 19;
+    const totalSteps = 17;
     const completedCount = Object.keys(state.completedSteps).length + Object.keys(state.bypassedSteps).length;
 
     if (completedCount === totalSteps) {
@@ -1229,8 +1349,10 @@
         state.timerInterval = null;
       }
 
-      // Hide timer container and notification if showing (without adding to recording count)
+      // Hide timer container, notes panel, and notification if showing
       document.getElementById('timerContainer').classList.remove('active', 'timer-warning');
+      document.getElementById('notesToggleBtn').classList.remove('active', 'open');
+      document.getElementById('notesPanel').classList.remove('active');
       document.getElementById('notificationOverlay').classList.remove('active');
       document.getElementById('timerNotification').classList.remove('active');
       state.notificationActive = false;
