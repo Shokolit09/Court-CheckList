@@ -642,7 +642,7 @@
       <div class="progress-fill" id="progressFill" style="width: 0"></div>
     </div>
     <div class="progress-text">
-      <span id="progressText">0 מתוך 27 שלבים הושלמו</span>
+      <span id="progressText">0 מתוך 26 שלבים הושלמו</span>
       <span id="progressPercent">0%</span>
     </div>
   </div>
@@ -783,48 +783,42 @@
         steps: [
           {
             id: 10,
-            title: "קימה כשהשופט נכנס",
-            description: "קימה כאשר השופט נכנס לדיון",
-            rationale: "הנוכחים מביטים בך ולומדים ממך כיצד להתנהג כאשר השופט נכנס"
+            title: "שילוב החלטת הסכמה להקלטה",
+            description: "בתחילת הפרוטוקול יש לשלב החלטה ← שתילת טקסט מובנה \"הסכמה/הקלטה/תיעוד מח\" + F3 ← לסגור בחתימה.",
+            rationale: null
           },
           {
             id: 11,
-            title: "שילוב טקסט מובנה",
-            description: "יש לשלב 'טקסט מובנה' ← הסכמה/הקלטה + לחצן F3. לשלב בכותרת הטקסט אירוע החלטה ALT+ל. לשלב בסוף הטקסט אירוע חתימה ALT+ח.",
-            rationale: "הטקסט המובנה מסביר מכוח מה הדיון מתנהל בהקלטה. ALT+ל יציג 'החלטה'."
-          },
-          {
-            id: 12,
             title: "הצגת Sound Bars והתחלת הקלטה",
             description: "יש להציג את מסך הבארים (קליק ימני). ההקלטה תתחיל רק עפ\"י הנחיית שופט! לעבור ללשונית נט המשפט ← ללחוץ על 'התחלה' ← לרשום על פתק את השעה בה החלה ההקלטה. לאחר 30 דקות יש ללחוץ על 'הקלטה' ← להמתין 10 שניות ← 'עצירה' ← 'הקלשה'.",
             rationale: "משך זמן ההקלטה לא יעלה על 30 דקות כדי שייווצר קובץ קטן. לפני עצירת הדיון, יש לסמן לשופט שבקרוב תבוצע עצירה בהקלטה."
           },
           {
-            id: 13,
+            id: 12,
             title: "בקרות להקלטה תקינה",
             description: "2 בקרות להקלטה תקינה: 1) הבארים מרצדים 2) כפתור החיווי הכחול שינה לאדום",
             rationale: "הבקרות הן תנאי להקלטה תקינה! אין לבצע כל פעולה אחרת בזמן ההקלטה."
           },
           {
-            id: 14,
+            id: 13,
             title: "מה נכתב בפרוטוקול ומה כהערה",
             description: "בפרוטוקול: נוכחים, טקסט מובנה, הגשת מוצגים, דיון מחוץ לפרוטוקול, החלטות אופרטיביות. כהערה להקלטה: נוכחים (להעתיק), עו\"ד/צד טוען, העד בבחירה ראשית/נגדית/חוזרת, כל הערה שהשופט יבקש.",
             rationale: "לחצן 'הערה' יוצר 'מראה מקום' לאירוע שקרה. אין להקליד החלטות תלושות או מפורשות מדי."
           },
           {
-            id: 15,
+            id: 14,
             title: "מחיקת התכתבויות",
             description: "כל התקשורת בינך לבין השופט תהיה בהתכתבויות בלבד. יש להקפיד למחוק את ההתכתבויות.",
             rationale: null
           },
           {
-            id: 16,
+            id: 15,
             title: "השגחה על מיקרופונים",
             description: "יש להשגיח כי המיקרופונים לא מוסתרים ע\"י קלסרים, דפים או תיקים. במידה ועורכי הדין מתרחקים מהמיקרופון, יש לסמן להם לחזור למקומם.",
             rationale: "מיקרופון שולחני שטוח המוסתר ע\"י קלסר לא יקליט בצורה תקינה. יש לעמוד בסמוך למיקרופון."
           },
           {
-            id: 17,
+            id: 16,
             title: "טיפול בקפיאת הבארים",
             description: "במידה ומסך הבארים קופא, יש לעבור להקלדה ולהזמין נאמן מחשוב",
             rationale: "משמעות התקלה: ההקלטה פסקה"
@@ -837,61 +831,61 @@
         icon: "✅",
         steps: [
           {
-            id: 18,
+            id: 17,
             title: "הקלדת ההחלטה הסופית ועצירת הקלטה",
             description: "יש להקליד את ההחלטה הסופית במלואה. להוסיף החלטה ALT+ל ← לכתוב את ההחלטה כפי שיכתיב השופט ← להוסיף חתימה ALT+ח ← לעצור את ההקלטה ← לחיצה על 'עצירת הדיון' ← המסמך ייסגר.",
             rationale: "לעיתים השופטים ירצו שההחלטה הסופית גם תוקלד וגם תוקלט. ראשית יש לעצור את ההקלטה ורק אחר כך לעצור את הדיון."
           },
           {
-            id: 19,
+            id: 18,
             title: "הדפסת פרוטוקול ומסירה לצדדים",
             description: "יש להדפיס את הפרוטוקול ע\"י CTRL+P במספר העותקים, לפי כמות הצדדים באולם ולמסור לצדדים.",
             rationale: "אין למסור לצדדים או לבאי כוחם כל פרט או מסמך אחר מתוך התיק, אלא באישור השופט."
           },
           {
-            id: 20,
+            id: 19,
             title: "סגירת Outlook וכניסה ל-VDI",
             description: "יש לסגור את ה-OUTLOOK המקומי ← להיכנס ל-VDI",
             rationale: null
           },
           {
-            id: 21,
+            id: 20,
             title: "האזנה לקבצי השמע",
             description: "דאבל קליק על קבצי השמע ← יופיעו מימין קובץ-1, קובץ-2 ← קליק על כל קובץ ← לחיצה על Play בתחתית המסך ← יש להאזין במשך כמה שניות לכל אחד מקבצי השמע.",
             rationale: "הקבצים נשתלו בנט המשפט ומופיעים בתיקיית 'פרוטוקולים'. במידה ונשמעות חריקות/צפצופים/הקלטה מקוטעת - יש לדווח באופן מידי למחשוב."
           },
           {
-            id: 22,
+            id: 21,
             title: "בקשת חתימה מהשופט",
             description: "רק לאחר שהקבצים נבדקו ונמצאו תקינים, יש לבקש מהשופט לחתום על הפרוטוקול.",
             rationale: "אין להזמין תמלול אם אחד הקבצים אינו תקין!"
           },
           {
-            id: 23,
+            id: 22,
             title: "בדיקת קבצי שמע גם ללא תמלול",
             description: "גם אם הורה השופט שלא להזמין תמלול, יש לבדוק את קבצי השמע.",
             rationale: "הצדדים יכולים להזמין עצמאית תמלול ולכן חשוב לבדוק את הקבצים בתום כל דיון."
           },
           {
-            id: 24,
+            id: 23,
             title: "הזמנת תמלול (רק בהנחיית השופט)",
             description: "עמידה על תיקיית 'פרוטוקולים' ← קליק ימני על תאריך הפרוטוקול ← הזמנת תמלול ← לבחור רמת דחיפות ← יוזמן תמלול SUMIT. רק במידה ונדרש תמלול אנושי - יש להיכנס שוב ולסמן 'האם נדרש גם תמלול מחברה חיצונית?' במחוז תל אביב: אין להזמין תמלול מחברה חיצונית!",
             rationale: "תמלול סאמיט (AI) היא ברירת המחדל! אין להזמין תמלול אנושי אלא בהנחיית השופט."
           },
           {
-            id: 25,
+            id: 24,
             title: "האזנה נוספת לקבצי השמע",
             description: "דאבל קליק על קבצי השמע ← יופיעו מימין קובץ-1, קובץ-2 ← קליק על כל קובץ ← לחיצה על Play ← יש להאזין במשך כמה שניות לכל אחד מקבצי השמע.",
             rationale: null
           },
           {
-            id: 26,
+            id: 25,
             title: "קביעת דיון המשך",
             description: "יש לקבוע ביומן את דיון ההמשך",
             rationale: null
           },
           {
-            id: 27,
+            id: 26,
             title: "הפקת בר-קוד למוצגים",
             description: "יש להפיק בר-קוד למוצגים, במידה והוגשו במהלך הדיון ולהעביר את המוצג לסריקה במזכירות.",
             rationale: null
@@ -1096,13 +1090,13 @@
     state.completedSteps[stepId] = true;
     state.currentStep = stepId + 1;
 
-    // Start timer when step 12 is completed
-    if (stepId === 12) {
+    // Start timer when step 11 is completed
+    if (stepId === 11) {
       startTimer();
     }
 
-    // Stop timer and save duration when step 18 is completed
-    if (stepId === 18) {
+    // Stop timer and save duration when step 17 is completed
+    if (stepId === 17) {
       stopTimerAndSaveDuration();
     }
 
@@ -1140,13 +1134,13 @@
       state.bypassReasons[pendingBypassStep] = bypassReason.value.trim();
       state.currentStep = pendingBypassStep + 1;
 
-      // Start timer when step 12 is bypassed
-      if (pendingBypassStep === 12) {
+      // Start timer when step 11 is bypassed
+      if (pendingBypassStep === 11) {
         startTimer();
       }
 
-      // Stop timer and save duration when step 18 is bypassed
-      if (pendingBypassStep === 18) {
+      // Stop timer and save duration when step 17 is bypassed
+      if (pendingBypassStep === 17) {
         stopTimerAndSaveDuration();
       }
 
@@ -1168,7 +1162,7 @@
 
   // Update progress bar
   function updateProgress() {
-    const totalSteps = 27;
+    const totalSteps = 26;
     const completedCount = Object.keys(state.completedSteps).length + Object.keys(state.bypassedSteps).length;
     const percent = Math.round((completedCount / totalSteps) * 100);
 
@@ -1213,7 +1207,7 @@
 
   // Check completion
   function checkCompletion() {
-    const totalSteps = 27;
+    const totalSteps = 26;
     const completedCount = Object.keys(state.completedSteps).length + Object.keys(state.bypassedSteps).length;
 
     if (completedCount === totalSteps) {
