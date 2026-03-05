@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh auth status)",
+      "Bash(where gh)",
+      "Bash(choco install gh -y)",
+      "Bash(cmd.exe /c \"winget install GitHub.cli --accept-source-agreements --accept-package-agreements\")",
+      "Bash(cmd.exe /c \"winget install --id GitHub.cli -e --accept-source-agreements --accept-package-agreements 2>&1\")",
+      "Bash(powershell.exe -Command \"winget install --id GitHub.cli -e --accept-source-agreements --accept-package-agreements\")",
+      "Bash(git init)",
+      "Bash(git add -A)"
+    ]
+  }
+}

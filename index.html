@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>צ'קליסט בית משפט</title>
+  <style>
+    /* פונט מערכת - עובד אופליין */
+    :root {
+      --court-blue: #003366;
+      --court-gold: #cfaa56;
+      --bg-main: #f3f4f6;
+      --bg-card: #ffffff;
+      --text-main: #1a1a2a;
+      --text-secondary: #475569;
+      --green-50: #f0fdf4;
+      --green-100: #dcfce7;
+      --green-500: #22c55e;
+      --green-600: #16a34a;
+      --green-700: #15803d;
+      --green-800: #166534;
+      --red-50: #fef2f2;
+      --red-100: #fee2e2;
+      --red-500: #ef4444;
+      --red-600: #dc2626;
+      --red-700: #b91c1c;
+      --amber-50: #fffbeb;
+      --amber-100: #fef3c7;
+      --amber-500: #f59e0b;
+      --amber-600: #d97706;
+      --sky-50: #f0f9ff;
+      --sky-100: #bae6fd;
+      --slate-500: #475569;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Arial Hebrew', 'Tahoma', sans-serif;
+      background: var(--bg-main);
+      color: var(--text-main);
+      height: 100vh;
+      overflow: hidden;
+      direction: rtl;
+    }
+
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--court-blue) 0%, #004080 100%);
+      color: white;
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 51, 102, 0.3);
+      position: relative;
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--court-gold), #e6c36a, var(--court-gold));
+    }
+
+    .header h1 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .header .subtitle {
+      font-size: 0.85rem;
+      opacity: 0.9;
+      font-weight: 300;
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      background: var(--bg-card);
+      padding: 12px 16px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green-500), var(--green-600));
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* Sections Navigation */
+    .sections-nav {
+      display: flex;
+      background: var(--bg-card);
+      border-bottom: 2px solid #e5e7eb;
+      overflow-x: auto;
+    }
+
+    .section-tab {
+      flex: 1;
+      padding: 10px 8px;
+      text-align: center;
+      font-size: 0.7rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      transition: all 0.3s ease;
+      border-bottom: 3px solid transparent;
+      min-width: 80px;
+    }
+
+    .section-tab:hover {
+      background: var(--sky-50);
+    }
+
+    .section-tab.active {
+      color: var(--court-blue);
+      border-bottom-color: var(--court-blue);
+      background: var(--sky-50);
+    }
+
+    .section-tab.completed {
+      color: var(--green-700);
+    }
+
+    .section-tab.completed::before {
+      content: '✓ ';
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .section-header {
+      background: linear-gradient(135deg, var(--court-blue) 0%, #004d99 100%);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px 8px 0 0;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-header .icon {
+      font-size: 1.2rem;
+    }
+
+    /* Checklist Items */
+    .checklist-item {
+      background: var(--bg-card);
+      border: 1px solid #e5e7eb;
+      border-top: none;
+      padding: 12px 16px;
+      transition: all 0.3s ease;
+    }
+
+    .checklist-item:last-child {
+      border-radius: 0 0 8px 8px;
+      margin-bottom: 16px;
+    }
+
+    .checklist-item.locked {
+      opacity: 0.5;
+      pointer-events: none;
+      background: #f9fafb;
+    }
+
+    .checklist-item.current {
+      border-right: 4px solid var(--court-gold);
+      background: var(--amber-50);
+    }
+
+    .checklist-item.completed {
+      background: var(--green-50);
+      border-right: 4px solid var(--green-500);
+    }
+
+    .checklist-item.bypassed {
+      background: var(--amber-50);
+      border-right: 4px solid var(--amber-500);
+    }
+
+    .item-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .step-number {
+      background: var(--court-blue);
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .checklist-item.completed .step-number {
+      background: var(--green-600);
+    }
+
+    .checklist-item.bypassed .step-number {
+      background: var(--amber-500);
+    }
+
+    .item-content {
+      flex: 1;
+    }
+
+    .item-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+      color: var(--text-main);
+    }
+
+    .item-description {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .item-rationale {
+      background: var(--sky-50);
+      border: 1px solid var(--sky-100);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: var(--slate-500);
+    }
+
+    .item-rationale::before {
+      content: '💡 ';
+    }
+
+    .item-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+      font-family: 'Segoe UI', 'Arial Hebrew', 'Tahoma', sans-serif;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--green-500) 0%, var(--green-600) 100%);
+      color: white;
+      flex: 1;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--green-600) 0%, var(--green-700) 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+    }
+
+    .btn-bypass {
+      background: var(--bg-main);
+      color: var(--text-secondary);
+      border: 1px solid #d1d5db;
+    }
+
+    .btn-bypass:hover {
+      background: var(--amber-50);
+      border-color: var(--amber-500);
+      color: var(--amber-600);
+    }
+
+    /* Bypass Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      width: 90%;
+      max-width: 360px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal h3 {
+      color: var(--amber-600);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+    }
+
+    .modal textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-family: 'Segoe UI', 'Arial Hebrew', 'Tahoma', sans-serif;
+      font-size: 0.9rem;
+      resize: vertical;
+      min-height: 80px;
+      margin-bottom: 16px;
+    }
+
+    .modal textarea:focus {
+      outline: none;
+      border-color: var(--court-blue);
+      box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .modal .btn {
+      flex: 1;
+    }
+
+    .btn-cancel {
+      background: var(--bg-main);
+      color: var(--text-secondary);
+    }
+
+    .btn-confirm-bypass {
+      background: var(--amber-500);
+      color: white;
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--bg-card);
+      border-top: 2px solid #e5e7eb;
+      padding: 12px 16px;
+    }
+
+    .btn-new-session {
+      width: 100%;
+      background: linear-gradient(135deg, var(--court-blue) 0%, #004d99 100%);
+      color: white;
+      padding: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .btn-new-session:hover {
+      background: linear-gradient(135deg, #004080 0%, #003366 100%);
+    }
+
+    .app-credit {
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      margin-top: 8px;
+      opacity: 0.7;
+    }
+
+    /* Completion Screen */
+    .completion-screen {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .completion-screen.active {
+      display: block;
+    }
+
+    .completion-icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+    }
+
+    .completion-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--green-700);
+      margin-bottom: 8px;
+    }
+
+    .completion-subtitle {
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+
+    .completion-duration {
+      background: var(--sky-50);
+      border: 2px solid var(--court-blue);
+      border-radius: 8px;
+      padding: 12px 20px;
+      margin-bottom: 24px;
+      display: inline-block;
+    }
+
+    .completion-duration-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .completion-duration-time {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--court-blue);
+      font-family: 'Consolas', 'Courier New', monospace;
+    }
+
+    /* Status Badge */
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      margin-right: 8px;
+    }
+
+    .status-badge.completed {
+      background: var(--green-100);
+      color: var(--green-700);
+    }
+
+    .status-badge.bypassed {
+      background: var(--amber-100);
+      color: var(--amber-600);
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-main);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Timer Styling */
+    .timer-container {
+      background: linear-gradient(135deg, var(--court-blue) 0%, #004080 100%);
+      color: white;
+      padding: 12px 16px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--court-gold);
+    }
+
+    .timer-container.active {
+      display: flex;
+    }
+
+    .timer-display {
+      font-size: 1.5rem;
+      font-weight: 700;
+      font-family: 'Consolas', 'Courier New', monospace;
+    }
+
+    .timer-label {
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+
+    .timer-warning {
+      background: linear-gradient(135deg, var(--amber-500) 0%, var(--amber-600) 100%);
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+
+    /* Notification Modal */
+    .notification-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      display: none;
+      text-align: center;
+      max-width: 340px;
+      border: 4px solid var(--amber-500);
+    }
+
+    .notification-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1999;
+      display: none;
+    }
+
+    .notification-overlay.active {
+      display: block;
+    }
+
+    .notification-modal.active {
+      display: block;
+    }
+
+    .notification-modal h3 {
+      color: var(--amber-600);
+      margin-bottom: 12px;
+      font-size: 1.2rem;
+    }
+
+    .notification-modal p {
+      color: var(--text-main);
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .notification-modal .btn {
+      width: 100%;
+    }
+
+    /* VC Section Styling */
+    .vc-notice {
+      background: linear-gradient(135deg, var(--sky-50) 0%, #e0f2fe 100%);
+      border: 1px solid var(--sky-100);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+    }
+
+    .vc-notice strong {
+      color: var(--court-blue);
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <!-- Header -->
+  <div class="header">
+    <h1>📋 צ'קליסט עבודת המזכיר</h1>
+    <div class="subtitle">מערכת תיעוד דיונים</div>
+  </div>
+
+  <!-- Timer -->
+  <div class="timer-container" id="timerContainer">
+    <div>
+      <div class="timer-label">זמן מתחילת ההקלטה</div>
+      <div class="timer-display" id="timerDisplay">00:00</div>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0"></div>
+    </div>
+    <div class="progress-text">
+      <span id="progressText">0 מתוך 32 שלבים הושלמו</span>
+      <span id="progressPercent">0%</span>
+    </div>
+  </div>
+
+  <!-- Sections Navigation -->
+  <div class="sections-nav">
+    <button class="section-tab active" data-section="1">1. בדיקות בוקר</button>
+    <button class="section-tab" data-section="2">2. הכנת פרוטוקול</button>
+    <button class="section-tab" data-section="3">3. העבודה בדיון</button>
+    <button class="section-tab" data-section="4">4. סיום הדיון</button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content" id="mainContent">
+    <!-- Content will be generated by JavaScript -->
+  </div>
+
+  <!-- Completion Screen -->
+  <div class="completion-screen" id="completionScreen">
+    <div class="completion-icon">🎉</div>
+    <div class="completion-title">הדיון הסתיים בהצלחה!</div>
+    <div class="completion-subtitle">כל השלבים הושלמו</div>
+    <div class="completion-duration" id="completionDuration" style="display: none;">
+      <div class="completion-duration-label">אורך הדיון</div>
+      <div class="completion-duration-time" id="completionDurationTime">00:00 דקות</div>
+    </div>
+    <div class="completion-duration" id="completionRecordings" style="display: none;">
+      <div class="completion-duration-label">מספר הקלטות</div>
+      <div class="completion-duration-time" id="completionRecordingsCount">0 הקלטות</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <button class="btn btn-new-session" id="newSessionBtn">🔄 התחל דיון חדש</button>
+    <div class="app-credit">פותח ע"י מיכל זבטני | מרכזת בכירה קלדנות ותיעוד דיונים | בית המשפט מחוזי חיפה</div>
+  </div>
+</div>
+
+<!-- Timer Notification Modal -->
+<div class="notification-overlay" id="notificationOverlay"></div>
+<div class="notification-modal" id="timerNotification">
+  <h3>⚠️ שים לב!</h3>
+  <p>עברו 30 דקות מתחילת ההקלטה.<br>יש לעצור את ההקלטה ולהתחיל הקלטה חדשה.</p>
+  <button class="btn btn-primary" id="dismissNotification">✓ בוצעה הקלטה חדשה</button>
+</div>
+
+<!-- Bypass Modal -->
+<div class="modal-overlay" id="bypassModal">
+  <div class="modal">
+    <h3>⚠️ מעקף חריג</h3>
+    <p>אתה עומד לדלג על שלב זה. אנא הזן את סיבת המעקף:</p>
+    <label for="bypassReason" style="display: none;">סיבת מעקף</label>
+    <textarea id="bypassReason" placeholder="הזן סיבה..."></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-cancel" id="cancelBypass">ביטול</button>
+      <button class="btn btn-confirm-bypass" id="confirmBypass">אשר מעקף</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Checklist Data - כל השלבים מהמסמך
+  const checklistData = {
+    sections: [
+      {
+        id: 1,
+        title: "בדיקות בוקר והכנת האולם",
+        icon: "🌅",
+        steps: [
+          {
+            id: 1,
+            title: "הגעה לאולם",
+            description: "הגעה לאולם 20 דקות לפני תחילת דיון ובדיקת שילוט",
+            rationale: null
+          },
+          {
+            id: 2,
+            title: "בדיקת אור אדום במיקרופון",
+            description: "יש לוודא הימצאות אור אדום בבסיס המיקרופון ובחלקו העליון",
+            rationale: null
+          },
+          {
+            id: 3,
+            title: "הפקת דו\"ח דיונים",
+            description: "להיכנס ל-VDI, לפתוח את נט המשפט ולהפיק דו\"ח דיונים ב-2 עותקים (עם הסתרת שמות חסויים). דו\"ח אחד לתליה מחוץ לאולם ואחד לשימושך.",
+            rationale: null
+          },
+          {
+            id: 4,
+            title: "הפעלת מערכות (מחוץ ל-VDI)",
+            description: "בפתיחת המחשב יעלו Recorder ו-Sound Bars. יש למזערם.<br>לחץ קליק שמאלי בודד על כפתור החיווי ב-Recorder 🎙️.<br>לחיצה על 'התחל', הקלד את שמך ותאריך היום. כפתור החיווי ישתנה לאדום. יש לגשת פיזית ולומר 2 משפטים לכל מיקרופון.",
+            rationale: null
+          },
+          {
+            id: 5,
+            title: "סיום בדיקה ובדיקת קובץ",
+            description: "ללחוץ על 'עצור'. כפתור החיווי יחזור להיות כחול. דאבל קליק על 'הקלטות' 🎧 בשולחן העבודה.<br>לחיצה על Date modified תציג את קובץ הקלטת הבדיקה שיצרת על שמך.",
+            rationale: "אין למחוק את קובץ הבדיקה - ישמש את המחשוב במקרה של תקלה."
+          },
+          {
+            id: 6,
+            title: "האזנה לקובץ הבדיקה",
+            description: "האזן לקובץ ע\"י לחיצה על לחצן הפליי ▶️.<br>קובץ תקין יציג קו הדומה ל\"א.ק.ג\".<br>קובץ לא תקין יציג קו ישר.",
+            rationale: "אין להקליט קובץ שאינו תקין, יש לדווח מיד למחשוב!"
+          },
+          {
+            id: 7,
+            title: "כניסה ליומן השופט",
+            description: "כניסה ליומן השופט ב-Outlook מחוץ ל-VDI.",
+            rationale: null
+          }
+        ]
+      },
+      {
+        id: 2,
+        title: "הכנת הפרוטוקול לפני כניסת השופט",
+        icon: "📝",
+        steps: [
+          {
+            id: 8,
+            title: "פתיחת הדיון מהיומן",
+            description: "קליק שמאלי על הדיון ביומן ← לעבור ללשונית נט המשפט ← ייפתח מסמך ← לחיצה על 'התחלה' ← פרוטוקול לדיון. לעבור ללשונית ← הצג קווי רשת.",
+            rationale: "יש לברר עם הצדדים באיזה תיק הם מופיעים ואותו יש לפתוח. יש לוודא שהפרוטוקול נפתח בתיק הנכון."
+          },
+          {
+            id: 9,
+            title: "כתיבת שמות הנוכחים",
+            description: "לכתוב את שמות הנוכחים מעל המילה 'פרוטוקול': ב\"כ התובע - עו\"ד שם פרטי ומשפחה והתובע בעצמו, ב\"כ הנתבע - עו\"ד שם פרטי ומשפחה והנתבע בעצמו. יש לתקן את כותרת המסמך (זכר/נקבה/רבים) בהתאם לשמות הצדדים.",
+            rationale: "במידה והדיון יוקלט, בפעם הראשונה שתדבר, עליך לומר את שמך ומעמדך בתיק. עליך להישאר ליד המיקרופון ולא להיכנס לדברי חברך."
+          },
+          {
+            id: 10,
+            title: "אין למחוק סימני סולמיות",
+            description: "אין למחוק את סימני הסולמיות ## המוקטנים המופיעים לאורך המסמך",
+            rationale: "הסימניות הקטנות ## מתפקדות כהוראת תיוק בתיק המשפטי"
+          },
+          {
+            id: 11,
+            title: "בדיקות לפני קריאה לשופט",
+            description: "עליך לקרוא לשופט להיכנס לאולם רק לאחר: מערכת ההקלטה נבדקה והיא תקינה, הצדדים נוכחים באולם, שמותיהם נרשמו בפרוטוקול. יש לפתוח פרוטוקול אחד בלבד!",
+            rationale: "השופט סומך עליך שכל השלבים בוצעו כך שעם כניסתו לאולם, הדיון יחל ללא עיכובים."
+          },
+          {
+            id: 12,
+            title: "אין להיכנס לנט המשפט לפעולות אחרות",
+            description: "אין להיכנס לנט המשפט ולבצע פעולות אחרות כגון טיפול בסל העבודה או קליטת מסכי בקרה.",
+            rationale: "כאשר כמה פרוטוקולים פתוחים במקביל, קל לטעות ולהקליט דיון בתיק לא נכון."
+          }
+        ]
+      },
+      {
+        id: 3,
+        title: "העבודה בדיון לאחר כניסת השופט",
+        icon: "⚖️",
+        steps: [
+          {
+            id: 13,
+            title: "קימה כשהשופט נכנס",
+            description: "קימה כאשר השופט נכנס לדיון",
+            rationale: "הנוכחים מביטים בך ולומדים ממך כיצד להתנהג כאשר השופט נכנס"
+          },
+          {
+            id: 14,
+            title: "שילוב טקסט מובנה",
+            description: "יש לשלב 'טקסט מובנה' ← הסכמה/הקלטה + לחצן F3. לשלב בכותרת הטקסט אירוע החלטה ALT+ל. לשלב בסוף הטקסט אירוע חתימה ALT+ח.",
+            rationale: "הטקסט המובנה מסביר מכוח מה הדיון מתנהל בהקלטה. ALT+ל יציג 'החלטה'."
+          },
+          {
+            id: 15,
+            title: "הצגת Sound Bars והתחלת הקלטה",
+            description: "יש להציג את מסך הבארים (קליק ימני). ההקלטה תתחיל רק עפ\"י הנחיית שופט! לעבור ללשונית נט המשפט ← ללחוץ על 'התחלה' ← לרשום על פתק את השעה בה החלה ההקלטה. לאחר 30 דקות יש ללחוץ על 'הקלטה' ← להמתין 10 שניות ← 'עצירה' ← 'הקלשה'.",
+            rationale: "משך זמן ההקלטה לא יעלה על 30 דקות כדי שייווצר קובץ קטן. לפני עצירת הדיון, יש לסמן לשופט שבקרוב תבוצע עצירה בהקלטה."
+          },
+          {
+            id: 16,
+            title: "בקרות להקלטה תקינה",
+            description: "2 בקרות להקלטה תקינה: 1) הבארים מרצדים 2) כפתור החיווי הכחול שינה לאדום",
+            rationale: "הבקרות הן תנאי להקלטה תקינה! אין לבצע כל פעולה אחרת בזמן ההקלטה."
+          },
+          {
+            id: 17,
+            title: "מה נכתב בפרוטוקול ומה כהערה",
+            description: "בפרוטוקול: נוכחים, טקסט מובנה, הגשת מוצגים, דיון מחוץ לפרוטוקול, החלטות אופרטיביות. כהערה להקלטה: נוכחים (להעתיק), עו\"ד/צד טוען, העד בבחירה ראשית/נגדית/חוזרת, כל הערה שהשופט יבקש.",
+            rationale: "לחצן 'הערה' יוצר 'מראה מקום' לאירוע שקרה. אין להקליד החלטות תלושות או מפורשות מדי."
+          },
+          {
+            id: 18,
+            title: "מחיקת התכתבויות",
+            description: "כל התקשורת בינך לבין השופט תהיה בהתכתבויות בלבד. יש להקפיד למחוק את ההתכתבויות.",
+            rationale: null
+          },
+          {
+            id: 19,
+            title: "השגחה על מיקרופונים",
+            description: "יש להשגיח כי המיקרופונים לא מוסתרים ע\"י קלסרים, דפים או תיקים. במידה ועורכי הדין מתרחקים מהמיקרופון, יש לסמן להם לחזור למקומם.",
+            rationale: "מיקרופון שולחני שטוח המוסתר ע\"י קלסר לא יקליט בצורה תקינה. יש לעמוד בסמוך למיקרופון."
+          },
+          {
+            id: 20,
+            title: "טיפול בקפיאת הבארים",
+            description: "במידה ומסך הבארים קופא, יש לעבור להקלדה ולהזמין נאמן מחשוב",
+            rationale: "משמעות התקלה: ההקלטה פסקה"
+          }
+        ]
+      },
+      {
+        id: 4,
+        title: "סיום הדיון",
+        icon: "✅",
+        steps: [
+          {
+            id: 21,
+            title: "הקלדת ההחלטה הסופית ועצירת הקלטה",
+            description: "יש להקליד את ההחלטה הסופית במלואה. להוסיף החלטה ALT+ל ← לכתוב את ההחלטה כפי שיכתיב השופט ← להוסיף חתימה ALT+ח ← לעצור את ההקלטה ← לחיצה על 'עצירת הדיון' ← המסמך ייסגר.",
+            rationale: "לעיתים השופטים ירצו שההחלטה הסופית גם תוקלד וגם תוקלט. ראשית יש לעצור את ההקלטה ורק אחר כך לעצור את הדיון."
+          },
+          {
+            id: 22,
+            title: "הדפסת פרוטוקול ומסירה לצדדים",
+            description: "יש להדפיס את הפרוטוקול ע\"י CTRL+P במספר העותקים, לפי כמות הצדדים באולם ולמסור לצדדים.",
+            rationale: "אין למסור לצדדים או לבאי כוחם כל פרט או מסמך אחר מתוך התיק, אלא באישור השופט."
+          },
+          {
+            id: 23,
+            title: "סגירת Outlook וכניסה ל-VDI",
+            description: "יש לסגור את ה-OUTLOOK המקומי ← להיכנס ל-VDI",
+            rationale: null
+          },
+          {
+            id: 24,
+            title: "האזנה לקבצי השמע",
+            description: "דאבל קליק על קבצי השמע ← יופיעו מימין קובץ-1, קובץ-2 ← קליק על כל קובץ ← לחיצה על Play בתחתית המסך ← יש להאזין במשך כמה שניות לכל אחד מקבצי השמע.",
+            rationale: "הקבצים נשתלו בנט המשפט ומופיעים בתיקיית 'פרוטוקולים'. במידה ונשמעות חריקות/צפצופים/הקלטה מקוטעת - יש לדווח באופן מידי למחשוב."
+          },
+          {
+            id: 25,
+            title: "בקשת חתימה מהשופט",
+            description: "רק לאחר שהקבצים נבדקו ונמצאו תקינים, יש לבקש מהשופט לחתום על הפרוטוקול.",
+            rationale: "אין להזמין תמלול אם אחד הקבצים אינו תקין!"
+          },
+          {
+            id: 26,
+            title: "בדיקת קבצי שמע גם ללא תמלול",
+            description: "גם אם הורה השופט שלא להזמין תמלול, יש לבדוק את קבצי השמע.",
+            rationale: "הצדדים יכולים להזמין עצמאית תמלול ולכן חשוב לבדוק את הקבצים בתום כל דיון."
+          },
+          {
+            id: 27,
+            title: "הזמנת תמלול (רק בהנחיית השופט)",
+            description: "עמידה על תיקיית 'פרוטוקולים' ← קליק ימני על תאריך הפרוטוקול ← הזמנת תמלול ← לבחור רמת דחיפות ← יוזמן תמלול SUMIT. רק במידה ונדרש תמלול אנושי - יש להיכנס שוב ולסמן 'האם נדרש גם תמלול מחברה חיצונית?' במחוז תל אביב: אין להזמין תמלול מחברה חיצונית!",
+            rationale: "תמלול סאמיט (AI) היא ברירת המחדל! אין להזמין תמלול אנושי אלא בהנחיית השופט."
+          },
+          {
+            id: 28,
+            title: "האזנה נוספת לקבצי השמע",
+            description: "דאבל קליק על קבצי השמע ← יופיעו מימין קובץ-1, קובץ-2 ← קליק על כל קובץ ← לחיצה על Play ← יש להאזין במשך כמה שניות לכל אחד מקבצי השמע.",
+            rationale: null
+          },
+          {
+            id: 29,
+            title: "קביעת דיון המשך",
+            description: "יש לקבוע ביומן את דיון ההמשך",
+            rationale: null
+          },
+          {
+            id: 30,
+            title: "הפקת בר-קוד למוצגים",
+            description: "יש להפיק בר-קוד למוצגים, במידה והוגשו במהלך הדיון ולהעביר את המוצג לסריקה במזכירות.",
+            rationale: null
+          }
+        ]
+      }
+    ]
+  };
+
+  // Application State
+  let state = {
+    currentSection: 1,
+    currentStep: 1,
+    completedSteps: {},
+    bypassedSteps: {},
+    bypassReasons: {},
+    timerStartTime: null,
+    timerInterval: null,
+    lastNotificationTime: null,
+    notificationActive: false,
+    recordingCount: 0,
+    finalDuration: null
+  };
+
+  // Load saved state from localStorage
+  function loadState() {
+    // Clear any saved state on app start - always start fresh
+    localStorage.removeItem('courtChecklistState');
+  }
+
+  // Save state to localStorage
+  function saveState() {
+    const toSave = {
+      currentSection: state.currentSection,
+      currentStep: state.currentStep,
+      completedSteps: state.completedSteps,
+      bypassedSteps: state.bypassedSteps,
+      bypassReasons: state.bypassReasons,
+      timerStartTime: state.timerStartTime,
+      lastNotificationTime: state.lastNotificationTime,
+      recordingCount: state.recordingCount
+    };
+    localStorage.setItem('courtChecklistState', JSON.stringify(toSave));
+  }
+
+  // Timer Functions
+  function startTimer() {
+    state.timerStartTime = new Date();
+    state.lastNotificationTime = new Date();
+    state.recordingCount = 0;
+    startTimerInterval();
+    document.getElementById('timerContainer').classList.add('active');
+  }
+
+  function startTimerInterval() {
+    const timerDisplay = document.getElementById('timerDisplay');
+    const timerContainer = document.getElementById('timerContainer');
+
+    // Restore lastNotificationTime if loaded from storage
+    if (state.lastNotificationTime && typeof state.lastNotificationTime === 'string') {
+      state.lastNotificationTime = new Date(state.lastNotificationTime);
+    }
+
+    state.timerInterval = setInterval(() => {
+      const elapsed = Math.floor((new Date() - state.timerStartTime) / 1000);
+      const minutes = Math.floor(elapsed / 60);
+      const seconds = elapsed % 60;
+
+      timerDisplay.textContent =
+              String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+
+      // Check if 30 minutes passed since last notification (use 1 for testing)
+      const timeSinceLastNotification = Math.floor((new Date() - state.lastNotificationTime) / 1000 / 60);
+
+      // Only show notification if not already showing
+      if (timeSinceLastNotification >= 29 && !state.notificationActive) {
+        state.notificationActive = true;
+        timerContainer.classList.add('timer-warning');
+        showTimerNotification();
+
+        // Send system notification
+        if (typeof require !== 'undefined') {
+          const { ipcRenderer } = require('electron');
+          ipcRenderer.send('show-notification', 'עברו 30 דקות! יש לעצור את ההקלטה ולהתחיל חדשה.');
+          ipcRenderer.send('show-window');
+        }
+      }
+    }, 1000);
+
+    document.getElementById('timerContainer').classList.add('active');
+  }
+
+  function stopTimer() {
+    if (state.timerInterval) {
+      clearInterval(state.timerInterval);
+      state.timerInterval = null;
+    }
+    state.timerStartTime = null;
+    state.lastNotificationTime = null;
+    document.getElementById('timerContainer').classList.remove('active', 'timer-warning');
+    document.getElementById('timerDisplay').textContent = '00:00';
+    saveState();
+  }
+
+  function showTimerNotification() {
+    document.getElementById('notificationOverlay').classList.add('active');
+    document.getElementById('timerNotification').classList.add('active');
+  }
+
+  function hideTimerNotification() {
+    document.getElementById('notificationOverlay').classList.remove('active');
+    document.getElementById('timerNotification').classList.remove('active');
+    document.getElementById('timerContainer').classList.remove('timer-warning');
+
+    // Reset the notification timer for the next 30 minutes
+    state.lastNotificationTime = new Date();
+    state.notificationActive = false;
+    state.recordingCount++;
+    saveState();
+  }
+
+  // DOM Elements
+  const mainContent = document.getElementById('mainContent');
+  const progressFill = document.getElementById('progressFill');
+  const progressText = document.getElementById('progressText');
+  const progressPercent = document.getElementById('progressPercent');
+  const completionScreen = document.getElementById('completionScreen');
+  const bypassModal = document.getElementById('bypassModal');
+  const bypassReason = document.getElementById('bypassReason');
+  const sectionTabs = document.querySelectorAll('.section-tab');
+  const newSessionBtn = document.getElementById('newSessionBtn');
+
+  let pendingBypassStep = null;
+
+  // Initialize
+  function init() {
+    renderSections();
+    updateProgress();
+    attachEventListeners();
+  }
+
+  // Render all sections
+  function renderSections() {
+    mainContent.innerHTML = '';
+
+    checklistData.sections.forEach(section => {
+      const sectionEl = document.createElement('div');
+      sectionEl.className = `section ${section.id === state.currentSection ? 'active' : ''}`;
+      sectionEl.id = `section-${section.id}`;
+
+      sectionEl.innerHTML = `
+          <div class="section-header">
+            <span class="icon">${section.icon}</span>
+            ${section.title}
+          </div>
+          ${section.steps.map(step => renderStep(step)).join('')}
+        `;
+
+      mainContent.appendChild(sectionEl);
+    });
+  }
+
+  // Render single step
+  function renderStep(step) {
+    const isCompleted = state.completedSteps[step.id];
+    const isBypassed = state.bypassedSteps[step.id];
+    const isCurrent = step.id === state.currentStep;
+    const isLocked = step.id > state.currentStep;
+
+    let statusClass = '';
+    if (isCompleted) statusClass = 'completed';
+    else if (isBypassed) statusClass = 'bypassed';
+    else if (isCurrent) statusClass = 'current';
+    else if (isLocked) statusClass = 'locked';
+
+    const statusBadge = isCompleted ? '<span class="status-badge completed">הושלם</span>' :
+            isBypassed ? '<span class="status-badge bypassed">מעקף</span>' : '';
+
+    return `
+        <div class="checklist-item ${statusClass}" data-step="${step.id}">
+          <div class="item-header">
+            <div class="step-number">${isCompleted ? '✓' : isBypassed ? '!' : step.id}</div>
+            <div class="item-content">
+              <div class="item-title">${statusBadge}${step.title}</div>
+              <div class="item-description">${step.description}</div>
+              ${step.rationale ? `<div class="item-rationale">${step.rationale}</div>` : ''}
+              ${isBypassed && state.bypassReasons[step.id] ? `<div class="item-rationale" style="background: var(--amber-50); border-color: var(--amber-100);">סיבת מעקף: ${state.bypassReasons[step.id]}</div>` : ''}
+            </div>
+          </div>
+          ${isCurrent && !isCompleted && !isBypassed ? `
+            <div class="item-actions">
+              <button class="btn btn-primary" onclick="completeStep(${step.id})">✓ בוצע</button>
+              <button class="btn btn-bypass" onclick="openBypassModal(${step.id})">מעקף</button>
+            </div>
+          ` : ''}
+        </div>
+      `;
+  }
+
+  // Complete step
+  function completeStep(stepId) {
+    state.completedSteps[stepId] = true;
+    state.currentStep = stepId + 1;
+
+    // Start timer when step 15 is completed
+    if (stepId === 15) {
+      startTimer();
+    }
+
+    // Stop timer and save duration when step 21 is completed
+    if (stepId === 21) {
+      stopTimerAndSaveDuration();
+    }
+
+    // Check if we need to move to next section
+    const currentSectionData = checklistData.sections.find(s => s.id === state.currentSection);
+    const lastStepInSection = currentSectionData.steps[currentSectionData.steps.length - 1].id;
+
+    if (stepId === lastStepInSection && state.currentSection < 4) {
+      state.currentSection++;
+      updateSectionTabs();
+    }
+
+    renderSections();
+    updateProgress();
+    checkCompletion();
+  }
+
+  // Open bypass modal
+  function openBypassModal(stepId) {
+    pendingBypassStep = stepId;
+    bypassReason.value = '';
+    bypassModal.classList.add('active');
+  }
+
+  // Close bypass modal
+  function closeBypassModal() {
+    bypassModal.classList.remove('active');
+    pendingBypassStep = null;
+  }
+
+  // Confirm bypass
+  function confirmBypass() {
+    if (pendingBypassStep && bypassReason.value.trim()) {
+      state.bypassedSteps[pendingBypassStep] = true;
+      state.bypassReasons[pendingBypassStep] = bypassReason.value.trim();
+      state.currentStep = pendingBypassStep + 1;
+
+      // Start timer when step 15 is bypassed
+      if (pendingBypassStep === 15) {
+        startTimer();
+      }
+
+      // Stop timer and save duration when step 21 is bypassed
+      if (pendingBypassStep === 21) {
+        stopTimerAndSaveDuration();
+      }
+
+      // Check if we need to move to next section
+      const currentSectionData = checklistData.sections.find(s => s.id === state.currentSection);
+      const lastStepInSection = currentSectionData.steps[currentSectionData.steps.length - 1].id;
+
+      if (pendingBypassStep === lastStepInSection && state.currentSection < 4) {
+        state.currentSection++;
+        updateSectionTabs();
+      }
+
+      closeBypassModal();
+      renderSections();
+      updateProgress();
+      checkCompletion();
+    }
+  }
+
+  // Update progress bar
+  function updateProgress() {
+    const totalSteps = 30;
+    const completedCount = Object.keys(state.completedSteps).length + Object.keys(state.bypassedSteps).length;
+    const percent = Math.round((completedCount / totalSteps) * 100);
+
+    progressFill.style.width = `${percent}%`;
+    progressText.textContent = `${completedCount} מתוך ${totalSteps} שלבים הושלמו`;
+    progressPercent.textContent = `${percent}%`;
+  }
+
+  // Update section tabs
+  function updateSectionTabs() {
+    sectionTabs.forEach(tab => {
+      const sectionId = parseInt(tab.dataset.section);
+      tab.classList.remove('active', 'completed');
+
+      if (sectionId === state.currentSection) {
+        tab.classList.add('active');
+      }
+
+      // Check if section is completed
+      const sectionData = checklistData.sections.find(s => s.id === sectionId);
+      const allStepsCompleted = sectionData.steps.every(step =>
+              state.completedSteps[step.id] || state.bypassedSteps[step.id]
+      );
+
+      if (allStepsCompleted) {
+        tab.classList.add('completed');
+      }
+    });
+  }
+
+  // Switch section
+  function switchSection(sectionId) {
+    state.currentSection = sectionId;
+
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(`section-${sectionId}`).classList.add('active');
+
+    sectionTabs.forEach(tab => {
+      tab.classList.toggle('active', parseInt(tab.dataset.section) === sectionId);
+    });
+  }
+
+  // Check completion
+  function checkCompletion() {
+    const totalSteps = 30;
+    const completedCount = Object.keys(state.completedSteps).length + Object.keys(state.bypassedSteps).length;
+
+    if (completedCount === totalSteps) {
+      // Show final duration if timer was used
+      if (state.finalDuration) {
+        document.getElementById('completionDurationTime').textContent = state.finalDuration + ' דקות';
+        document.getElementById('completionDuration').style.display = 'inline-block';
+
+        // Show recording count
+        const recordingText = state.recordingCount + ' הקלטות';
+        document.getElementById('completionRecordingsCount').textContent = recordingText;
+        document.getElementById('completionRecordings').style.display = 'inline-block';
+      }
+
+      mainContent.style.display = 'none';
+      completionScreen.classList.add('active');
+    }
+  }
+
+  // Reset session
+  function resetSession() {
+    stopTimer();
+    hideTimerNotification();
+
+    state = {
+      currentSection: 1,
+      currentStep: 1,
+      completedSteps: {},
+      bypassedSteps: {},
+      bypassReasons: {},
+      timerStartTime: null,
+      timerInterval: null,
+      lastNotificationTime: null,
+      notificationActive: false,
+      recordingCount: 0,
+      finalDuration: null
+    };
+
+    mainContent.style.display = 'block';
+    completionScreen.classList.remove('active');
+
+    renderSections();
+    updateProgress();
+    updateSectionTabs();
+    saveState();
+  }
+
+  function stopTimerAndSaveDuration() {
+    if (state.timerStartTime) {
+      const elapsed = Math.floor((new Date() - new Date(state.timerStartTime)) / 1000);
+      const minutes = Math.floor(elapsed / 60);
+      const seconds = elapsed % 60;
+      state.finalDuration = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+
+      // Add the final recording (the one that was running when we stopped)
+      state.recordingCount++;
+
+      // Stop the timer interval
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+        state.timerInterval = null;
+      }
+
+      // Hide timer container and notification if showing (without adding to recording count)
+      document.getElementById('timerContainer').classList.remove('active', 'timer-warning');
+      document.getElementById('notificationOverlay').classList.remove('active');
+      document.getElementById('timerNotification').classList.remove('active');
+      state.notificationActive = false;
+    }
+  }
+
+  // Attach event listeners
+  function attachEventListeners() {
+    sectionTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        switchSection(parseInt(tab.dataset.section));
+      });
+    });
+
+    document.getElementById('cancelBypass').addEventListener('click', closeBypassModal);
+    document.getElementById('confirmBypass').addEventListener('click', confirmBypass);
+    document.getElementById('dismissNotification').addEventListener('click', hideTimerNotification);
+    newSessionBtn.addEventListener('click', resetSession);
+
+    // Close modal on overlay click
+    bypassModal.addEventListener('click', (e) => {
+      if (e.target === bypassModal) {
+        closeBypassModal();
+      }
+    });
+  }
+
+  // Start app
+  loadState();
+  init();
+</script>
+</body>
+</html>

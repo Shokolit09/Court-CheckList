@@ -1,0 +1,29 @@
+{
+  "name": "court-checklist",
+  "version": "1.0.0",
+  "description": "מערכת צ'קליסט לקלדניות בית משפט",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "dist": "electron-builder --win"
+  },
+  "author": "בתי המשפט",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^40.1.0",
+    "electron-builder": "^26.7.0"
+  },
+  "build": {
+    "appId": "com.court.checklist",
+    "productName": "צ'קליסט בית משפט",
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
