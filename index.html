@@ -43,15 +43,14 @@
       font-family: 'Segoe UI', 'Arial Hebrew', 'Tahoma', sans-serif;
       background: var(--bg-main);
       color: var(--text-main);
-      height: 100vh;
-      overflow: hidden;
+      min-height: 100vh;
       direction: rtl;
     }
 
     .app-container {
       display: flex;
       flex-direction: column;
-      height: 100vh;
+      min-height: 100vh;
     }
 
     /* Header */
@@ -160,7 +159,6 @@
     /* Main Content */
     .main-content {
       flex: 1;
-      overflow-y: auto;
       padding: 12px;
     }
 
@@ -526,7 +524,6 @@
       align-items: center;
       justify-content: space-between;
       border-bottom: 2px solid var(--court-gold);
-      position: relative;
     }
 
     .timer-container.active {
@@ -656,12 +653,6 @@
       border-bottom: 2px solid var(--court-gold);
       padding: 12px 16px;
       animation: slideDown 0.3s ease;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     }
 
     .notes-panel.active {
@@ -744,23 +735,23 @@
       <div class="timer-display" id="timerDisplay">00:00</div>
     </div>
     <button class="notes-toggle-btn" id="notesToggleBtn" onclick="toggleNotesPanel()">📝 הערות להקלטה</button>
+  </div>
 
-    <!-- Recording Notes Panel -->
-    <div class="notes-panel" id="notesPanel">
-      <div class="notes-panel-header">
-        <div class="notes-panel-title">📝 הערות להקלטה</div>
-        <button class="notes-panel-close" onclick="toggleNotesPanel()">✕</button>
-      </div>
-      <div class="notes-card">
-        <div class="notes-card-title">הערות להקלטה</div>
-        <div class="notes-card-content">יש להקפיד לרשום בהערות מי הדוברים, מי העדים שנחקרים, שלב חקירה, מי עורך הדין שחוקר, וכל אירוע אחר כמו הצגת ראיות, סימונם וכו'.</div>
-        <div class="notes-card-tip">* בדן יחיד אין צורך לרשום בהערות כאשר השופט מדבר.<br>* בהרכב יש לרשום את שם השופט הדובר.</div>
-      </div>
-      <div class="notes-card">
-        <div class="notes-card-title">תשומת לב מיוחדת במהלך הדיון</div>
-        <div class="notes-card-content">1. מיקרופונים גלויים ולא מוסתרים ע"י קלסרים וכו'.<br>2. הדובר טוען רק ממקום מושבו בסמוך למיקרופון.<br>3. בארים מרצדים כראוי.</div>
-        <div class="notes-card-tip">* במידה ומסך הבארים קופא, יש לעדכן שופט + עצירת הקלטה + פנייה דחופה לנאמן מחשוב.</div>
-      </div>
+  <!-- Recording Notes Panel -->
+  <div class="notes-panel" id="notesPanel">
+    <div class="notes-panel-header">
+      <div class="notes-panel-title">📝 הערות להקלטה</div>
+      <button class="notes-panel-close" onclick="toggleNotesPanel()">✕</button>
+    </div>
+    <div class="notes-card">
+      <div class="notes-card-title">הערות להקלטה</div>
+      <div class="notes-card-content">יש להקפיד לרשום בהערות מי הדוברים, מי העדים שנחקרים, שלב חקירה, מי עורך הדין שחוקר, וכל אירוע אחר כמו הצגת ראיות, סימונם וכו'.</div>
+      <div class="notes-card-tip">* בדן יחיד אין צורך לרשום בהערות כאשר השופט מדבר.<br>* בהרכב יש לרשום את שם השופט הדובר.</div>
+    </div>
+    <div class="notes-card">
+      <div class="notes-card-title">תשומת לב מיוחדת במהלך הדיון</div>
+      <div class="notes-card-content">1. מיקרופונים גלויים ולא מוסתרים ע"י קלסרים וכו'.<br>2. הדובר טוען רק ממקום מושבו בסמוך למיקרופון.<br>3. בארים מרצדים כראוי.</div>
+      <div class="notes-card-tip">* במידה ומסך הבארים קופא, יש לעדכן שופט + עצירת הקלטה + פנייה דחופה לנאמן מחשוב.</div>
     </div>
   </div>
 
