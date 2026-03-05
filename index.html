@@ -732,11 +732,11 @@
 
   <!-- Timer -->
   <div class="timer-container" id="timerContainer">
-    <div>
-      <div class="timer-label">טיימר תזכורת לעצירת הקלטה</div>
+    <button class="notes-toggle-btn" id="notesToggleBtn" onclick="toggleNotesPanel()">📝 הערות להקלטה</button>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <div class="timer-label" style="margin: 0;">טיימר תזכורת לעצירת הקלטה</div>
       <div class="timer-display" id="timerDisplay">00:00</div>
     </div>
-    <button class="notes-toggle-btn" id="notesToggleBtn" onclick="toggleNotesPanel()">📝 הערות להקלטה</button>
   </div>
 
   <!-- Recording Notes Panel -->
@@ -1006,6 +1006,9 @@
     startTimerInterval();
     document.getElementById('timerContainer').classList.add('active');
     document.getElementById('notesToggleBtn').classList.add('active');
+    // Auto-open notes panel when recording starts
+    document.getElementById('notesPanel').classList.add('active');
+    document.getElementById('notesToggleBtn').classList.add('open');
   }
 
   function startTimerInterval() {
